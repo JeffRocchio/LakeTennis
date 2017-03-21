@@ -1,0 +1,484 @@
+
+/*
+	Base styles for the non-admin pages.
+*/
+BODY.bdyNormal {
+	font-family: sans-serif;
+	color: #306030;
+	margin-left: 5px;
+	margin-top: 5px
+	}
+	
+.fntNormal { 
+	font-family: sans-serif;
+	color: #306030
+	}
+	
+P.pgHdrPurpose {
+	font-size: small;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+	
+P.pgHdrTopic1 {
+	font-size: medium;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+	
+P.pgHdrTopic2 {
+	font-size: large;
+	text-decoration: underline;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+	
+TD {
+	font-family: sans-serif;
+	color: #306030
+	}
+
+/*
+	Base styles for home pages.
+*/
+
+
+#home_MetricTbl
+  	{
+		font-size: small;
+		background: #AAAA44;
+		width: 20em;
+		float: right;
+		height: auto;
+		padding-left: .1em;
+		margin-left: 1em;
+		border: solid
+	}
+
+#home_announce
+  	{
+		padding-left: .5em;
+		height: auto
+	}
+
+#home_maincontent
+  	{
+		padding-left: .5em;
+		clear: both
+	}
+
+
+
+OL.NumL1 {
+ font-family: sans-serif;
+ color: #306030;
+ list-style-type: decimal;
+}
+
+OL.NumL2 {
+ font-family: sans-serif;
+ color: #306030;
+ list-style-type: lower-alpha
+
+}
+
+LI.Normal {
+ font-family: sans-serif;
+ color: #306030;
+ margin-top: 1em;
+}
+
+/*
+	Styles for the page-footer and login form.
+*/
+
+form#frmLogin {
+ background-color: #CCCCCC;
+ color: #000000;
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ font-size: 9px;
+ text-align: right;
+}
+
+form#frmLogin.text {
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ font-size: 9px;
+ width: 80px;
+ margin-right: 1px;
+}
+
+form#frmLogin.button {
+ font-size: 9px;
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+table.tblLogin {
+border: 1px solid #000000;
+width: 100%
+
+}
+
+td.tdLinks {
+ width: 50%;
+ margin: 0;
+ text-align: left;
+ background-color: #CCCCCC;
+ color: #000000;
+ border: 0;
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ font-size: medium;
+}
+
+td.tdLogin {
+ width: 50%;
+ margin: 0;
+ text-align: right;
+ background-color: #CCCCCC;
+ color: #000000;
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ font-size: medium;
+}
+ 
+ 
+/*
+	These styles were defined for use in the listSeriesRoster.php script.
+*/
+.rsvpRoleCaptain { font-size: x-small; font-weight: bold; color: red; margin-top: 0; margin-bottom: 0}
+.rsvpRoleCoCaptain { font-size: x-small; font-weight: bold; color: purple; margin-top: 0; margin-bottom: 0}
+.rsvpRoleOther { font-size: x-small; font-weight: bold; color: silver; margin-top: 0; margin-bottom: 0}
+.rsvpPosition { font-size: x-large; font-weight: bolder; margin-top: 0; margin-bottom: 0 }
+.rsvpAvail { font-size: x-small; font-weight: normal; margin-top: 0; margin-bottom: 0 }
+.cellEditLink { font-size: x-small; color: blue; text-align: right; margin-top: 0; margin-bottom: 0 }
+.evtDate { font-size: medium; font-weight: bold; color: black; margin-top: 0; margin-bottom: 0}
+.evtTime { font-size: small; font-weight: bold; color: black; margin-top: 0; margin-bottom: 0}
+.evtOpponent { font-size: xx-small; font-weight: bold; color: black; margin-top: 0; margin-bottom: 0}
+.evtVenue { font-size: xx-small; font-weight: bold; color: black; margin-top: 0; margin-bottom: 0}
+.prsnPName { text-align: right; font-size: medium; font-weight: normal; color: black; margin-top: 0; margin-bottom: 0}
+
+/*
+	Styles for the listSeriesRoster grid page and table.
+			NOTE: In style "P.rosterGLong" we do use the attribute "width: 100px;" in
+		order to *not* have the browser expand the width of that column really wide 
+		to accomodate lengthy note text when it has open white space on the right of the table.
+		That is an visually unappealing behavior of the browser and there seems no decent
+		way to control that behavior.
+*/
+
+TD.rosterLable {
+	vertical-align: text-top;
+	background-color: #EEEEEE;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterUnknown {
+	background-color: #EEEEEE;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellPlay {
+	background-color: #CCFFCC;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellPIDd {
+	background-color: #CCFFCC;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellAvail {
+	background-color: #70FF70;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellNota {
+	background-color: #FFAAAA;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellBkup {
+	background-color: #70FF70;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellTent {
+	background-color: #FFFFAA;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterCellClear {
+	background-color: #FFFFFF;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterDone {
+	background-color: #EEEEEE;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterDoneWin {
+/*	background-color: #AAAAFF; */
+	background-color: #FFFF77;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+TD.rosterDoneLoss {
+/*	background-color: #AAAACC; */
+	background-color: #CCCCCC;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-top: thin solid black;
+	border-right: thin solid black
+	}
+
+P.rosterFullName {
+	text-align: left;
+	font-size: small;
+	font-weight: bold;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterPhone {
+	text-align: left;
+	font-size: xx-small;
+	font-weight: normal;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterPublicName {
+	text-align: left;
+	font-size: small;
+	font-weight: bold;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterGShort {
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterGMed {
+	text-align: center;
+	font-size: small;
+	font-weight: bold;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterGLong {
+	/* Note use of width: attribute. See note at top of this secion on why.*/
+	width: 100px;
+	text-align: center;
+	font-size: x-small;
+	font-weight: normal;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterRole {
+	text-align: center;
+	font-size: x-small;
+	font-weight: bold;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.rosterAvail {
+	text-align: center;
+	font-size: x-small;
+	font-weight: normal;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+
+
+/*
+	   These styles are for use in displaying records in general.
+	
+	   'dd' prefix stands for Data Display. General use in displaying data.
+	   
+	   'detRec' prefix stands for Detail Record. Normally this means we are showing 
+	a single record that we selected from a list.
+*/
+.ddPagePurpose { font-size: x-small; font-weight: normal; color: black; margin-top: 0; margin-bottom: 0}
+.ddPageTopicL1 { font-size: large; font-weight: normal; color: black; text-decoration: underline; margin-top: 0; margin-bottom: 10px}
+.ddPageTopicL2 { font-size: medium; font-weight: normal; color: black; margin-top: 0; margin-bottom: 0}
+
+.detRecPurpose { font-size: x-small; font-weight: normal; color: black; background-color: #88ee11; margin-top: 0; margin-bottom: 0}
+.detRecPageTopicL1 { font-size: large; font-weight: normal; color: black; text-decoration: underline; background-color: #88ee11; margin-top: 0; margin-bottom: 10px}
+.detRecPageTopicL2 { font-size: medium; font-weight: normal; color: black; background-color: #88ee11; margin-top: 0; margin-bottom: 0}
+
+.ddSectionTitle { font-size: medium; font-weight: bold; color: black; margin-top: 10px; margin-bottom: 0}
+.ddItemGraph { font-size: medium; font-weight: normal; color: black; margin-left: 10px; margin-top: 0; margin-bottom: 0}
+.ddItemName { font-size: medium; font-weight: bold; color: black }
+.ddItemData { font-size: medium; font-weight: normal; color: black; text-decoration: underline}
+
+TABLE.ddTable {
+	border: 1px solid #000000;
+	width: 100%
+	}
+
+TH.ddTblCellHeading {
+	background-color: #BBBBBB;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+TR.ddTblRow {
+	vertical-align: top;
+	}
+
+TD.ddTblCellSectiontitle {
+	text-align: left;
+	background-color: #BBBBBB;
+	margin-top: 10px;
+	margin-bottom: 0
+	}
+
+TD.ddTblCellLabel {
+	text-align: right;
+	background-color: #BBBBBB;
+	width: 25%;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+TD.ddTblCellInput {
+	text-align: left;
+	font-size: medium;
+	font-weight: normal;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+TD.ddTblCellDisplay {
+	text-align: left;
+	background-color: #EEEEEE;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.ddFieldName {
+	font-size: medium;
+	font-weight: bold;
+	color: black;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.ddFieldDscrpt {
+	font-size: x-small;
+	font-weight: normal;
+	color: gray;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.ddFieldData {
+	font-size: medium;
+	font-weight: normal;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.ddFieldDataLong {
+	font-size: small;
+	font-weight: normal;
+	margin-top: 0;
+	margin-bottom: 0
+	}
+
+P.ddSectionTitle {
+	text-align: left;
+	font-size: medium;
+	font-weight: bold;
+	color: black;
+	font-style: italic;
+	margin-bottom: 0
+	}
+
+/*
+	New set of styles for data display.
+*/
+
+
+
+
+
+
+
+
+
+
+
+
