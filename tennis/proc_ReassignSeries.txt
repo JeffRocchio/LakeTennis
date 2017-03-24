@@ -1,0 +1,73 @@
+Move a Series to a different club:
+
+	1.	Edit the series and change it's 'Club' field to the new club.
+	
+	2.	Ensure that all the people in the series have Person records in the
+		new club.
+		
+	3.	For each 'eligible' record in the series, edit the person field so it
+		points to the correct person record in the new club. (This has to be done
+		by hand for each eligible record, one-by-one.)
+		
+	4.	For each 'RSVP' record in the series, edit the person field so it points
+		to the correct person record in the new club. (See below query to help
+		with this.)
+		
+		
+For Step #4 Above - Query to Execute for each person-row in the grid:
+>>>-----------
+
+---This Query shows all the RSVP records that need to be changed:
+SELECT 
+series.ID AS seriesID, 
+series.ShtName AS seriesShtName, 
+Event.ID AS evtID, 
+Event.Name AS evtName, 
+rsvp.ID AS rsvpID, 
+person.ID AS prsnID, 
+person.PName AS prsnPName 
+FROM 
+tennis.rsvp rsvp, 
+tennis.Event Event, 
+tennis.series series, 
+tennis.person person 
+WHERE ( 
+Event.ID=rsvp.Event AND 
+series.ID=Event.Series AND 
+person.ID=rsvp.Person) 
+AND ((series.ID=4))
+ORDER BY person.ID;
+
+---This Query shows all the RSVP records for a single person that need to be
+	changed:
+SELECT 
+Event.ID AS evtID, 
+Event.Name AS evtName, 
+rsvp.ID AS rsvpID, 
+person.ID AS prsnID, 
+person.PName AS prsnPName 
+FROM 
+tennis.rsvp rsvp, 
+tennis.Event Event, 
+tennis.person person 
+WHERE ( 
+Event.ID=rsvp.Event AND 
+person.ID=rsvp.Person) 
+AND ((Event.Series=4 AND rsvp.Person=1))
+ORDER BY rsvp.Person;
+
+
+---This Query then actually implements the RSVP record changes for a single
+	person. Be sure to put the Series ID# in the 2nd item of the WHERE clause.
+	Then for each person in the series ---> 
+	   Put *new* person ID# in the SET statement, 
+	   And the old ID# in the last item of the WHERE clause:
+UPDATE 
+rsvp, 
+Event 
+SET rsvp.Person=13 
+WHERE rsvp.Event=Event.ID AND Event.Series=4 
+AND rsvp.Person=10
+;
+
+
