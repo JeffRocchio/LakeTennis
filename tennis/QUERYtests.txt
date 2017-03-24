@@ -1,0 +1,384 @@
+To Log into MySQL from a terminal window:
+-----------------------------------------------------------------------------
+jeff@jeff:~$ mysql -u php -p
+
+Enter password: php
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3 to server version: 5.0.18-standard
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql> use tennis;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql>
+
+             
+-----------------------------------------------------------------------------
+
+To Set Field to It's Default Value:
+-----------------------------------------------------------------------------
+UPDATE series SET ViewLevel=DEFAULT;
+
+
+For multi-club. Update query to create ClubMember records for each
+existing person record in the DB.
+		* List each person record, showing it's ID and ClubID fields. This are
+	the two fields needed to populate the ClubMember foreign keys.
+	   * Package this into an INSERT query.
+-----------------------------------------------------------------------------
+INSERT ClubMember (Person, Club, Active) 
+SELECT ID AS Person, ClubID AS Club, 1 AS Active FROM person
+;
+
+
+
+For multi-club. New query to get list of persons who are (a) members of a
+given club and (b) not yet flagged as participating in the given series.
+-----------------------------------------------------------------------------
+SELECT qryClubMember.prsnID, 
+qryClubMember.Person, 
+qryClubMember.ClubID, 
+qryClubMember.Active AS Active, 
+qryClubMember.LName, 
+eligibleForSeries.Series 
+FROM 
+	(SELECT 
+		ClubMember.Person, 
+		ClubMember.Active, 
+		ClubMember.Club AS clubID, 
+		person.ID AS prsnID, 
+		person.LName 
+	FROM ClubMember, person 
+	WHERE (ClubMember.Person=person.ID AND ClubMember.Club=1)) 
+	AS qryClubMember 
+	LEFT JOIN 
+	  (SELECT * 
+	  FROM eligible 
+	  WHERE eligible.Series=1) 
+	  AS eligibleForSeries 
+	  ON qryClubMember.prsnID=eligibleForSeries.Person 
+WHERE (qryClubMember.Active=1 AND qryClubMember.ClubID=1 AND eligibleForSeries.Series IS NULL) 
+;
+
+
+New query for listing Club Members for the multi-club implementation
+-------------------------------------------------------------------------------
+
+SELECT 
+ClubMember.ID AS ID,
+ClubMember.Club AS CMClubID, 
+ClubMember.Person AS CMPersonID, 
+club.ID AS clubID, 
+club.ClubName AS clubName, 
+person.ID AS prsnID, 
+person.PName AS prsnPName, 
+person.FName AS prsnFName, 
+person.LName AS prsnLName 
+FROM club, 
+person, 
+ClubMember 
+WHERE (ClubMember.Person=person.ID AND ClubMember.Club=club.ID) 
+ORDER BY prsnLName, prsnFName 
+AS qryClubMembers
+
+
+
+Used in listSeriesRoster.php. To determine if current user is a
+series participant.
+-------------------------------------------------------------------------------
+SELECT prsnFullName, seriesName FROM 
+(SELECT 
+eligible.ID AS eligID, 
+series.ShtName AS seriesShtName, 
+series.LongName AS seriesName, 
+series.Type AS seriesTypeCode, 
+series.EvtsIREmail AS seriesEvtsIREmail, 
+person.ID AS prsnID, 
+CONCAT(person.FName,' ',person.LName) AS prsnFullName, 
+person.PName AS prsnPName, 
+person.FName AS prsnFName, 
+person.LName AS prsnLName, 
+person.Email1 AS Email1, 
+person.Email2 AS Email2, 
+person.Email3 AS Email3, 
+person.Email1Active AS Email1Active, 
+person.Email2Active AS Email2Active, 
+person.Email3Active AS Email3Active, 
+series.ID AS ID 
+FROM series, 
+person, 
+eligible 
+WHERE (eligible.Person=person.ID AND eligible.Series=series.ID) 
+ORDER BY prsnLName, prsnFName) 
+AS qrySeriesEligible 
+WHERE (prsnID=1 AND ID=1)
+;
+
+
+
+
+For Email List Gen Script:
+--------------------------
+SELECT 
+series.ID AS ID, 
+Event.ID AS evtID, 
+rsvp.ID AS rsvpID, 
+person.ID AS prsnID, 
+person.PName AS prsnPName, 
+CONCAT(person.FName,' ',person.LName) AS prsnFullName, 
+person.LName AS prsnLName, 
+person.FName AS prsnFName, 
+person.Email1 AS Email1, 
+person.Email2 AS Email2, 
+person.Email3 AS Email3, 
+person.Email1Active AS Email1Active, 
+person.Email2Active AS Email2Active, 
+person.Email3Active AS Email3Active 
+FROM 
+rsvp, 
+Event, 
+series, 
+person 
+WHERE (
+Event.ID=rsvp.Event AND 
+series.ID=Event.Series AND 
+person.ID=rsvp.Person)
+;
+
+
+
+
+
+
+
+
+For RollDates Script.
+List of events in series on given day-of-week:
+-----------------------------
+SELECT 
+	Event.ID AS evtID, 
+	Event.Name AS evtName, 
+	Event.Start AS evtStart, 
+	Event.End AS evtEnd, 
+	DAYOFWEEK(Event.Start) AS evtDayofWeek, 
+	DATE_ADD(Event.Start,INTERVAL 7 DAY) AS evtStartNextWeek, 
+	DATE_ADD(Event.End,INTERVAL 7 DAY) AS evtEndNextWeek 
+FROM 
+	Event 
+WHERE 
+	Event.Series=1 
+	AND (DAYOFWEEK(Event.Start)=5)
+ORDER BY 
+	Event.Start DESC
+;
+
+Query to Post Updates:
+-----------------------------
+UPDATE 
+	Event 
+SET 
+	Event.Start='2006-03-02 09:00:00', 
+	Event.End='2006-03-02 09:00:00' 
+WHERE 
+	Event.ID=1
+;
+
+
+
+Query to fetch a list of clubs along with the current user's rights on each club.
+-----------------------------
+SELECT 
+	qryClubDisp.*, 
+	IF(authority.Privilege,authority.Privilege,0) AS userPriv 
+FROM 
+(SELECT club.ID AS clubID, club.ClubName AS clubName, club.Descript AS clubDescript FROM club ORDER BY club.ClubName) 
+AS qryClubDisp 
+	LEFT JOIN 
+	authority 
+	ON authority.ObjType=55 AND clubID=authority.ObjID AND authority.Person=2
+;
+
+
+Query to fetch a user's credentials their rights for the club.
+(I.e., are they a 'club manager'?)
+-----------------------------
+
+SELECT 
+	person.UserID, person.ID, person.ClubID, 
+	IF(authority.Privilege,authority.Privilege,0) AS userPriv 
+FROM 
+	person 
+LEFT JOIN 
+	authority 
+	ON authority.ObjType=55 AND ClubID=authority.ObjID AND authority.Person=person.ID
+;
+
+
+
+
+
+Query to fetch events for a series along with the current user's rights on each event.
+Used the qrySeriesEvts pre-defined query as the sub-query.
+-----------------------------
+SELECT 
+	qrySeriesEvts.*, 
+	IF(authority.Privilege,authority.Privilege,0) AS userPrivEvt 
+FROM 
+(SELECT Event.ID AS evtID, venue.ID AS venueID, series.ID AS ID, Event.Name AS evtName, Event.Start AS evtStart, Event.End AS evtEnd, Code.ShtName AS evtPurpose, Event.MakeUp AS evtMakeup, Event.ResultCode AS evtResultCode, Code_3.ShtName AS evtResultShtName, venue.ShtName AS venueShtName, series.ShtName AS seriesShtName, series.Type AS seriesTypeCode FROM Code, Code Code_3, series, Event, venue WHERE (Code.ID=Event.Purpose AND series.ID=Event.Series AND venue.ID=Event.Venue) AND Code_3.ID=Event.ResultCode ORDER BY Event.Start) 
+AS qrySeriesEvts 
+	LEFT JOIN 
+	authority 
+	ON authority.ObjType=43 AND evtID=authority.ObjID AND authority.Person=1 
+WHERE (qrySeriesEvts.ID=1)
+;
+
+
+
+
+
+
+
+
+
+
+----------------------------
+SELECT 
+	* 
+FROM (SELECT 
+	value.*, 
+	person.ID AS personID, 
+	person.FName AS prsnFName, 
+	person.LName AS prsnLName, 
+	CONCAT(person.FName,' ',person.LName) AS prsnFullName, 
+	person.PName AS prsnPName, 
+	metric.ID AS metricID, 
+	metric.ValType AS metricValType, 
+	metric.SortDesc AS metricSortDesc 
+FROM value, 
+	person, 
+	metric 
+WHERE (
+	metric.ID=value.metric AND 
+	person.ID=value.Person
+)) AS qryValueDisp 
+WHERE metricID=1 
+ORDER BY CAST(qryValueDisp.Value AS SIGNED) DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT 
+	*, 
+	CASE metricValType 
+		WHEN 49 THEN CAST(value.Value AS SIGNED) 
+		WHEN 50 THEN CAST(value.Value AS DECIMAL) 
+		WHEN 51 THEN CAST(value.Value AS DECIMAL) 
+		WHEN 52 THEN value.Value 
+	AS SortVal 
+FROM 
+(SELECT 
+	value.*, 
+	person.ID AS personID, 
+	person.FName AS prsnFName, 
+	person.LName AS prsnLName, 
+	CONCAT(person.FName,' ',person.LName) AS prsnFullName, 
+	person.PName AS prsnPName, 
+	metric.ID AS metricID, 
+	metric.ValType AS metricValType, 
+	metric.SortDesc AS metricSortDesc 
+FROM value, 
+	person, 
+	metric 
+WHERE (
+	metric.ID=value.metric AND 
+	person.ID=value.Person
+)) AS qryTmp 
+ORDER BY DESC SortVal;
+
+
+
+
+
+
+
+SELECT 
+	*, 
+	CAST(M1 AS DECIMAL) AS M1Value, 
+	CAST(M2 AS SIGNED) AS M2Value 
+FROM 
+(SELECT 
+	value.Person AS prsnID, 
+	person.PName AS prsnPName, 
+	person.FName AS prsnFName, 
+	person.LName AS prsnLName, 
+	CONCAT(person.FName,' ',person.LName) AS prsnFullName, 
+	MAX(CASE WHEN value.metric = 2 THEN Value END) AS M1, 
+	MAX(CASE WHEN value.metric = 2 THEN metric.ValType END) AS M1VType, 
+	CASE WHEN value.metric = 2 THEN value.Note END AS M1Note, 
+	MAX(CASE WHEN value.metric = 1 THEN Value END) AS M2, 
+	MAX(CASE WHEN value.metric = 1 THEN metric.ValType END) AS M2VType, 
+	CASE WHEN value.metric = 1 THEN value.Note END AS M2Note 
+FROM 
+	value, 
+	person, 
+	metric 
+WHERE 
+	(value.metric=metric.ID AND value.Person=person.ID) 
+	AND (value.metric IN (0, 2, 1)) 
+GROUP BY 
+	prsnID
+) AS qryMetricTable 
+ORDER BY 
+	M1Value
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT 
+	value.Person AS prsnID, 
+	person.PName AS prsnPName, 
+	person.FName AS prsnFName, 
+	person.LName AS prsnLName, 
+	CONCAT(person.FName,' ',person.LName) AS prsnFullName, 
+	MAX(CASE WHEN value.metric = 2 THEN Value END) AS M1, 
+	MAX(CASE WHEN value.metric = 2 THEN metric.ValType END) AS M1VType, 
+	CASE WHEN value.metric = 2 THEN value.Note END AS M1Note, 
+	MAX(CASE WHEN value.metric = 1 THEN Value END) AS M2, 
+	MAX(CASE WHEN value.metric = 1 THEN metric.ValType END) AS M2VType, 
+	CASE WHEN value.metric = 1 THEN value.Note END AS M2Note 
+FROM 
+	value, 
+	person, 
+	metric 
+WHERE 
+	(value.metric=metric.ID AND value.Person=person.ID) 
+	AND (value.metric IN (0, 2, 1)) 
+GROUP BY 
+	prsnID
+ORDER BY 
+	M1, 
+	prsnPName
+;
