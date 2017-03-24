@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>Holbrook Tennis News</title>
+    <link>http://laketennis.com</link>
+    <description>Site of the guys playing tennis out of Holbrook Park</description>
+    <language>en-us</language>
+    <pubDate>Sun, 22 Jul 2007 19:00:00 GMT</pubDate>
+    <lastBuildDate>Sun, 22 Jul 2007 19:41:00 GMT</lastBuildDate>
+    <docs>http://laketennis.com/tennis/files/guide_USTALeagueSignupInfo.html</docs>
+    <generator>Manual</generator>
+    <managingEditor>tennis@laketennis.com</managingEditor>
+    <webMaster>tennis@laketennis.com</webMaster>
+
+    <item>
+    <title>Team Meeting Thursday, July 26 at 7:00pm</title>
+    <link>http://laketennis.com/tennis/dispEvent.php?ID=17</link>
+      <description>We have a team meeting on Thursday evening, July 26, at
+		Derek's house. This will be in place of our regular Thursday evening
+		recreational playing. The purpose is to plan for the Fall, including,
+		but not limited to, the Fall league season.</description>
+    <pubDate>Sun, 22 Jul 2007 19:00:00 GMT</pubDate>
+      <guid>20070127a</guid>
+    </item>
+    
+    <item>
+    <title>Spring League Registration</title>
+    <link>http://laketennis.com/tennis/files/guide_USTALeague_Spring.html</link>
+      <description>If you have signed up for the USTA Spring League, you need to get
+		youself registered on Tennislink.</description>
+    <pubDate>Sun, 22 Jul 2007 19:00:00 GMT</pubDate>
+      <guid>20070127b</guid>
+    </item>
+    
+    <item>
+      <title>USTA Spring Men's 3.5 Roster Grid</title>
+      <link>http://laketennis.com/tennis/listSeriesRoster.php?ID=6</link>
+      <description>The intial Roster Grid for Adult Men's 3.5 USTA Spring
+		League is up. Please go to it, login, and record your availability for
+		the season.</description>
+      <pubDate>Sun, 22 Jul 2007 19:00:00 GMT</pubDate>
+      <guid>20070127c</guid>
+    </item>
+    
+    <item>
+    <title>RSVP for Week of Jan-28</title>
+    <link>http://laketennis.com/tennis/listSeriesRoster.php?ID=1</link>
+      <description>Please do your RSVPs for the week of Jan-28 for
+		recreational play.</description>
+    <pubDate>Sun, 22 Jul 2007 19:00:00 GMT</pubDate>
+      <guid>20070127d</guid>
+    </item>
+    
+  
+  
+  </channel>
+</rss>
