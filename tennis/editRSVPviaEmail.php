@@ -98,8 +98,9 @@ if (array_key_exists('meta_POST', $_POST))
 			local_dbRSVPUpdate($evtID, $rsvpClaim, $position, $role, $note);
 			}
 				//   Use standard function to auto-re-direct back to
-				//the display page.
-		echo ADMIN_Post_HeaderOK($tblName, $rtnpg, $message);
+				//the display page. But we are debugging, do do this else
+				//we won't be able to see the debugging messages.
+		if (!$DEBUG) echo ADMIN_Post_HeaderOK($tblName, $rtnpg, $message);
 		}
 	}
 
@@ -244,32 +245,51 @@ else
 					//matches. And also note that 'Self' does not apply for
 					//authority on those - you have to be an admin or event
 					//manager to edit those fields.
-		if (($row['evtPurposeCd'] !=6) && ($row['evtPurposeCd'] !=7))
-			{
-			$fldAuth = "MGR";
-			$fldFrmName = "Position_{$i}";
-			$cdSet = 5;
-			$fldValue = $row['rsvpPositionCode'];
-			$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
-			echo "<BR />Position<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
-			
-			$fldAuth = "MGR";
-			$fldFrmName = "Role_{$i}";
-			$cdSet = 4;
-			$fldValue = $row['rsvpRoleCode'];
-			$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
-			echo "<BR />Role<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
+					   //   3/24/2017: I had to add exclusion of purpose code #65 here because I
+				   //added a new code for Fully Populated Courts. This caused a bug, or really
+				   //it inadvertenly caused an execution path that then invoked what was a
+				   //latent bug - see Bug Fix Up note below.
+		if (($row['evtPurposeCd'] !=6) && ($row['evtPurposeCd'] !=7) && ($row['evtPurposeCd'] !=65)) {
+			/* ==== Bug Fix-Up Note ==========
+				   I have to do a kludgy fix-up here to fix a bug. The bug is that a
+			   regular user, who is not an admin or series or event manager, doesn't
+			   get an editable Role field. With that field being empty it causes an
+			   ill formed SQL statement, which errs out, thus the rsvp info the user
+			   populates into their form never gets updated into the database. So I 
+			   have to check for this condition and fix it up here.
+			*/
+			if($usrRights=='GST') {
+				$fldFrmName = "Position_{$i}";
+				$fldValue = $row['rsvpPositionCode'];
+				echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
+				$fldFrmName = "Role_{$i}";
+				$fldValue = $row['rsvpRoleCode'];
+				echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
 			}
-		else
-			{
+			else {
+				$fldAuth = "MGR";
+				$fldFrmName = "Position_{$i}";
+				$cdSet = 5;
+				$fldValue = $row['rsvpPositionCode'];
+				$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
+				echo "<BR />Position<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
+				
+				$fldAuth = "MGR";
+				$fldFrmName = "Role_{$i}";
+				$cdSet = 4;
+				$fldValue = $row['rsvpRoleCode'];
+				$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
+				echo "<BR />Role<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
+			}
+		}
+		else {
 			$fldFrmName = "Position_{$i}";
 			$fldValue = $row['rsvpPositionCode'];
 			echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
 			$fldFrmName = "Role_{$i}";
 			$fldValue = $row['rsvpRoleCode'];
 			echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
-			}
-			
+		}
 		$fldAuth = "MGR&self={$prsnID}";
 		$fldFrmName = "Note_{$i}";
 		$fldValue = $row['rsvpNote'];
@@ -278,7 +298,11 @@ else
 		echo "<BR />{$CRLF}{$CRLF}";
 		}
 	while ($row = mysql_fetch_array($qryResult));
+
 	
+
+
+
 				//   Save the number of events we processed, so we can do the
 				//same number in the post loop.
 	echo "<input type=hidden name=meta_RECCOUNT value={$i}>{$CRLF}{$CRLF}";
@@ -370,6 +394,17 @@ function local_AuthorityCheck($sID, $eID)
 			if ($tmp=='MGR' or $tmp=='ADM') { $userPriv='MGR'; }
 			}
 		}
+/*  3/24/2017: At first blush it appears there is a problem here - a regular user
+falls through this series of IF statements without being identified as a
+regular user - if not me (superAdmin), a club manager, a series manager or
+the event's manager the set default of 'GST' doesn't get changed. But there
+really isn't any problem. 
+   Falling through here
+as 'GST' just means that we build the data-entry form we do a check at the
+field level to see if the specific event we are buiding the form for is for 
+"self", meaning the personID for that item matches the currently logged in 
+user.
+*/
 	
 	return $userPriv;
 
@@ -521,6 +556,7 @@ $DEBUG = FALSE;
 		$GLOBALS['lstErrMsg'] .= '<BR>Invalid query: ' . mysql_error();
 		$GLOBALS['lstErrMsg'] .= '<BR><BR>Query Sent: ' . $query;
 		$message = $GLOBALS['lstErrMsg'];
+		if ($DEBUG) { echo "lstErrMsg: <BR />{$message}<BR /><BR />"; }
 		}
 		
 	return $qryResult;

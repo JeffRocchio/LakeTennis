@@ -103,8 +103,9 @@ if (array_key_exists('meta_POST', $_POST))
 			local_dbRSVPUpdate($evtID, $rsvpClaim, $position, $role, $note);
 			}
 				//   Use standard function to auto-re-direct back to
-				//the display page.
-		echo ADMIN_Post_HeaderOK($tblName, $rtnpg, $message);
+				//the display page. But we are debugging, do do this else
+				//we won't be able to see the debugging messages.
+		if (!$DEBUG) echo ADMIN_Post_HeaderOK($tblName, $rtnpg, $message);
 		}
 	}
 
@@ -217,31 +218,51 @@ else
 					//matches. And also note that 'Self' does not apply for
 					//authority on those - you have to be an admin or event
 					//manager to edit those fields.
-		if (($row['evtPurposeCd'] !=6) && ($row['evtPurposeCd'] !=7))
-			{
-			$fldAuth = "MGR";
-			$fldFrmName = "Position_{$i}";
-			$cdSet = 5;
-			$fldValue = $row['rsvpPositionCode'];
-			$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
-			echo "<BR />Position<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
-			
-			$fldAuth = "MGR";
-			$fldFrmName = "Role_{$i}";
-			$cdSet = 4;
-			$fldValue = $row['rsvpRoleCode'];
-			$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
-			echo "<BR />Role<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
+					   //   3/24/2017: I had to add exclusion of purpose code #65 here because I
+				   //added a new code for Fully Populated Courts. This caused a bug, or really
+				   //it inadvertenly caused an execution path that then invoked what was a
+				   //latent bug - see Bug Fix Up note below.
+		if (($row['evtPurposeCd'] !=6) && ($row['evtPurposeCd'] !=7) && ($row['evtPurposeCd'] !=65)) {
+			/* ==== Bug Fix-Up Note ==========
+				   I have to do a kludgy fix-up here to fix a bug. The bug is that a
+			   regular user, who is not an admin or series or event manager, doesn't
+			   get an editable Role field. With that field being empty it causes an
+			   ill formed SQL statement, which errs out, thus the rsvp info the user
+			   populates into their form never gets updated into the database. So I 
+			   have to check for this condition and fix it up here.
+			*/
+			if($usrRights=='GST') {
+				$fldFrmName = "Position_{$i}";
+				$fldValue = $row['rsvpPositionCode'];
+				echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
+				$fldFrmName = "Role_{$i}";
+				$fldValue = $row['rsvpRoleCode'];
+				echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
 			}
-		else
-			{
+			else {
+				$fldAuth = "MGR";
+				$fldFrmName = "Position_{$i}";
+				$cdSet = 5;
+				$fldValue = $row['rsvpPositionCode'];
+				$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
+				echo "<BR />Position<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
+				
+				$fldAuth = "MGR";
+				$fldFrmName = "Role_{$i}";
+				$cdSet = 4;
+				$fldValue = $row['rsvpRoleCode'];
+				$rowHTML = local_GenFieldDropCode($fldFrmName, $cdSet, $fldValue, $fldAuth, $usrRights);
+				echo "<BR />Role<BR />&nbsp;&nbsp;&raquo;{$rowHTML}{$CRLF}";
+			}
+		}
+		else {
 			$fldFrmName = "Position_{$i}";
 			$fldValue = $row['rsvpPositionCode'];
 			echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
 			$fldFrmName = "Role_{$i}";
 			$fldValue = $row['rsvpRoleCode'];
 			echo "<input type=hidden name={$fldFrmName} value={$fldValue}>{$CRLF}";
-			}
+		}
 			
 		$fldAuth = "MGR&self={$prsnID}";
 		$fldFrmName = "Note_{$i}";
